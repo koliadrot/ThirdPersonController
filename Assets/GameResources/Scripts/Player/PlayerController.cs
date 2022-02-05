@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Контроллер игрока
+/// Контроллер состояний игрока
 /// </summary>
 public class PlayerController : MonoBehaviour, IStatable
 {
@@ -11,11 +11,21 @@ public class PlayerController : MonoBehaviour, IStatable
 
     void IStatable.TransitionToState(AbstractPlayerState state)
     {
+        if (state == null)
+        {
+            Debug.LogError("Отсутствует тип состояния");
+            return;
+        }
         currentState = state;
+    }
+
+    private void FixedUpdate()
+    {
+        currentState.FixedUpdateState();
     }
 
     private void Update()
     {
-        currentState.UpdateState();
+        currentState.HandleInput();
     }
 }
