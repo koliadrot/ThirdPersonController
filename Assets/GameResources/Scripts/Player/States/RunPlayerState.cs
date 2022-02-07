@@ -87,11 +87,19 @@ public class RunPlayerState : BasePlayerState
                 OnSmoothDampingAnimate();
             });
         }
+#if ENABLE_INPUT_SYSTEM
+        if (input.IsJump && GetGroundStatus())
+#else
         if (Input.GetKeyDown(KeyCode.Space) && GetGroundStatus())
+#endif
         {
             ChangeState(jumpState);
         }
+#if ENABLE_INPUT_SYSTEM
+        if (input.IsSprint)
+#else
         if (Input.GetKeyDown(KeyCode.LeftShift))
+#endif
         {
             sprint = !sprint;
         }

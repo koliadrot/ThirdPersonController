@@ -30,7 +30,11 @@ public class IdlePlayerState : BasePlayerState
     public override void HandleInput()
     {
         base.HandleInput();
+#if ENABLE_INPUT_SYSTEM
+        if (input.IsJump && GetGroundStatus())
+#else
         if (Input.GetKeyDown(KeyCode.Space) && GetGroundStatus())
+#endif
         {
             ChangeState(jumpState);
         }

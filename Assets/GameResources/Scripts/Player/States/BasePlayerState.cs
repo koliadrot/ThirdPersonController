@@ -13,6 +13,7 @@ public class BasePlayerState : MonoBehaviour
     protected Rigidbody rigidBody;
     protected CapsuleCollider capsuleCollider;
     protected Animator animator;
+    protected InputPlayerManager input;
 
     private int animIDFreeFall;
     private int animIDGrounded;
@@ -34,6 +35,7 @@ public class BasePlayerState : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         animator = GetComponent<Animator>();
+        input = GetComponent<InputPlayerManager>();
         animIDFreeFall = Animator.StringToHash(ANIMATION_FREE_FALL);
         animIDGrounded = Animator.StringToHash(ANIMATION_IDLE);
         lenthRay = (capsuleCollider.height / 2f * OFFSET_GROUND) - capsuleCollider.center.y;
@@ -53,11 +55,19 @@ public class BasePlayerState : MonoBehaviour
     }
     protected virtual float GetHorizontalPosition()
     {
+#if ENABLE_INPUT_SYSTEM
+       return input.Move.x;
+#else
         return Input.GetAxis(HORIZONTAL);
+#endif
     }
     protected virtual float GetVerticalPosition()
     {
+#if ENABLE_INPUT_SYSTEM
+        return input.Move.y;
+#else
         return Input.GetAxis(VERTICAL);
+#endif
     }
 
     protected virtual void ChangeState(BasePlayerState state,Action action=null)

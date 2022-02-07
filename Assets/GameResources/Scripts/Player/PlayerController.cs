@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Контроллер состояний игрока
 /// </summary>
+[RequireComponent(typeof(InputPlayerManager))]
 public class PlayerController : MonoBehaviour, IStatable
 {
     private BasePlayerState currentState;
