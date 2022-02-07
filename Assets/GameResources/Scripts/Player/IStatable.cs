@@ -11,5 +11,5 @@ public interface IStatable
     /// Изменяет состояние
     /// </summary>
     /// <param name="state"></param>
-    void TransitionToState(AbstractPlayerState state);
+    void TransitionToState(BasePlayerState state);
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 /// <summary>
 /// Состояние бега
 /// </summary>
-public class RunPlayerState : AbstractPlayerState
+public class RunPlayerState : BasePlayerState
 {
     [SerializeField]
-    private float moveSpeed = 20f;
+    private float moveSpeed = 7f;
     [SerializeField]
-    private float sprintSpeed = 50f;
+    private float sprintSpeed = 20f;
     [SerializeField]
     private float speedChangeRate = 10.0f;
     [SerializeField, Range(0.0f, 0.3f)]
@@ -24,6 +24,9 @@ public class RunPlayerState : AbstractPlayerState
     private float targetSpeed;
     private float currentHorizontalSpeed;
     private float rotation;
+    private float animationBlend;
+
+    private IEnumerator animationCoroutine;
 
     private Vector3 targetDirection;
     private Vector3 inputDirection;
@@ -31,16 +34,24 @@ public class RunPlayerState : AbstractPlayerState
     private IdlePlayerState idleState;
     private JumpPlayerState jumpState;
 
+    private int animIDSpeed;
+
+    private const string ANIMATION_SPEED = "Speed";
+    private const float DURATION = 70f;
+
     protected override void Awake()
     {
         base.Awake();
         idleState = GetComponent<IdlePlayerState>();
         jumpState = GetComponent<JumpPlayerState>();
+        animIDSpeed = Animator.StringToHash(ANIMATION_SPEED);
     }
 
     public override void FixedUpdateState()
     {
+        base.FixedUpdateState();
         Move();
+        Animate();
     }
 
     private void Move()
@@ -51,6 +62,8 @@ public class RunPlayerState : AbstractPlayerState
 
         speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed, Time.deltaTime * speedChangeRate);
         speed = Mathf.Round(speed * 1000f) / 1000f;
+
+        animationBlend = Mathf.Lerp(animationBlend, targetSpeed, Time.deltaTime * speedChangeRate);
 
         inputDirection = new Vector3(GetHorizontalPosition(), 0.0f, GetVerticalPosition()).normalized;
 
@@ -65,12 +78,16 @@ public class RunPlayerState : AbstractPlayerState
 
     public override void HandleInput()
     {
+        base.HandleInput();
         if (!GetMovementStatus())
         {
-            sprint = false;
-            ChangeState(idleState);
+            ChangeState(idleState,delegate
+            {
+                sprint = false;
+                OnSmoothDampingAnimate();
+            });
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && GetGroundStatus())
         {
             ChangeState(jumpState);
         }
@@ -78,5 +95,38 @@ public class RunPlayerState : AbstractPlayerState
         {
             sprint = !sprint;
         }
+    }
+
+    private void Animate()
+    {
+        if (GetGroundStatus())
+        {
+            animator.SetFloat(animIDSpeed, animationBlend);
+        }
+    }
+
+    private void OnSmoothDampingAnimate()
+    {
+        if (animationCoroutine != null)
+        {
+            StopCoroutine(animationCoroutine);
+        }
+        animationCoroutine = SmoothDampingAnimate();
+        StartCoroutine(animationCoroutine);
+    }
+
+    private IEnumerator SmoothDampingAnimate()
+    {
+        while (animationBlend > 0f)
+        {
+            animationBlend -= Time.deltaTime*DURATION;
+            animator.SetFloat(animIDSpeed, animationBlend);
+            yield return null;
+            if (GetMovementStatus())
+            {
+                break;
+            }
+        }
+        animationCoroutine = null;
     }
 }

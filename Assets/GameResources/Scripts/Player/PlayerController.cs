@@ -7,15 +7,10 @@ using UnityEngine;
 /// </summary>
 public class PlayerController : MonoBehaviour, IStatable
 {
-    private AbstractPlayerState currentState;
+    private BasePlayerState currentState;
 
-    void IStatable.TransitionToState(AbstractPlayerState state)
+    void IStatable.TransitionToState(BasePlayerState state)
     {
-        if (state == null)
-        {
-            Debug.LogError("Отсутствует тип состояния");
-            return;
-        }
         currentState = state;
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Состояние "Idle"
 /// </summary>
-public class IdlePlayerState : AbstractPlayerState
+public class IdlePlayerState : BasePlayerState
 {
     private RunPlayerState runState;
     private JumpPlayerState jumpState;
@@ -20,6 +20,7 @@ public class IdlePlayerState : AbstractPlayerState
 
     public override void FixedUpdateState()
     {
+        base.FixedUpdateState();
         if (GetMovementStatus())
         {
             ChangeState(runState);
@@ -28,7 +29,8 @@ public class IdlePlayerState : AbstractPlayerState
 
     public override void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        base.HandleInput();
+        if (Input.GetKeyDown(KeyCode.Space) && GetGroundStatus())
         {
             ChangeState(jumpState);
         }
