@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Состояние бега
 /// </summary>
-public class RunPlayerState : BasePlayerState
+public class RunPlayerState : GroundedState
 {
     [SerializeField]
     private float moveSpeed = 7f;
@@ -47,11 +47,10 @@ public class RunPlayerState : BasePlayerState
         animIDSpeed = Animator.StringToHash(ANIMATION_SPEED);
     }
 
-    public override void FixedUpdateState()
+    public override void PhysicsUpdate()
     {
-        base.FixedUpdateState();
+        base.PhysicsUpdate();
         Move();
-        Animate();
     }
 
     private void Move()
@@ -74,6 +73,14 @@ public class RunPlayerState : BasePlayerState
         targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
 
         rigidBody.MovePosition(transform.position + targetDirection.normalized * (speed * Time.deltaTime));
+        Animate();
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+        sprint = false;
+        OnSmoothDampingAnimate();
     }
 
     public override void HandleInput()
@@ -81,11 +88,7 @@ public class RunPlayerState : BasePlayerState
         base.HandleInput();
         if (!GetMovementStatus())
         {
-            ChangeState(idleState,delegate
-            {
-                sprint = false;
-                OnSmoothDampingAnimate();
-            });
+            ChangeState(idleState);
         }
 #if ENABLE_INPUT_SYSTEM
         if (input.IsJump && GetGroundStatus())

@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Состояние прыжка
 /// </summary>
-public class JumpPlayerState : BasePlayerState
+public class JumpPlayerState : GroundedState
 {
     [SerializeField]
     private float jumpForce = 5f;
@@ -24,25 +25,38 @@ public class JumpPlayerState : BasePlayerState
         animIDJump = Animator.StringToHash(ANIMATION_JUMP);
     }
 
-    public override void FixedUpdateState()
+    public override void PhysicsUpdate()
     {
-        base.FixedUpdateState();
-        JumpAndGravity();
+        base.PhysicsUpdate();
+        GravityFalling();
     }
 
-    private void JumpAndGravity()
+    private void GravityFalling()
+    {
+        if (!GetGroundStatus())
+        {
+            ChangeState(idleState);
+        }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+        animator.SetBool(animIDJump, false);
+    }
+
+    public override void Enter()
+    {
+        base.Enter();
+        Jump();
+    }
+
+    private void Jump()
     {
         if (GetGroundStatus())
         {
             animator.SetBool(animIDJump, true);
             rigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-        else if (!GetGroundStatus())
-        {
-            ChangeState(idleState,delegate
-            {
-                animator.SetBool(animIDJump, false);
-            });
         }
     }
 }

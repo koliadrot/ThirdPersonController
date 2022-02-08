@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Состояние "Idle"
 /// </summary>
-public class IdlePlayerState : BasePlayerState
+public class IdlePlayerState : GroundedState
 {
     private RunPlayerState runState;
     private JumpPlayerState jumpState;
@@ -13,14 +13,13 @@ public class IdlePlayerState : BasePlayerState
     protected override void Awake()
     {
         base.Awake();
-        ChangeState(this);
         runState = GetComponent<RunPlayerState>();
         jumpState = GetComponent<JumpPlayerState>();
     }
 
-    public override void FixedUpdateState()
+    public override void PhysicsUpdate()
     {
-        base.FixedUpdateState();
+        base.PhysicsUpdate();
         if (GetMovementStatus())
         {
             ChangeState(runState);
