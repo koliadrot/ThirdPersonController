@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[RequireComponent(typeof(PlayerController), typeof(Rigidbody), typeof(CapsuleCollider)), RequireComponent(typeof(Animator))]
 public class GroundedState : BasePlayerState
 {
     protected Rigidbody rigidBody;
     protected CapsuleCollider capsuleCollider;
     protected Animator animator;
     protected InputPlayerManager input;
+    protected Transform target;
+    protected PlayerController playerController;
 
     private int animIDFreeFall;
     private int animIDGrounded;
-    private float lenthRay;
+    private float groundHeight;
     private LayerMask layer;
     private bool isFalling;
 
@@ -24,17 +25,24 @@ public class GroundedState : BasePlayerState
     private const string GROUND = "Ground";
     private const float OFFSET_GROUND = 1.05f;
 
-    protected override void Awake()
+    public GroundedState(IStatable _statable, IMachinable _machinable, PlayerController _playerController) : base(_statable, _machinable)
     {
-        base.Awake();
+        playerController = _playerController;
+        Constructor();
+    }
+
+    protected override void Constructor()
+    {
+        base.Constructor();
+        rigidBody = playerController.RigidBody;
+        capsuleCollider = playerController.СapsuleCollider;
+        animator = playerController.Animator;
+        input = playerController.InputPlayer;
+        target = playerController.transform;
         layer.value = LayerMask.GetMask(GROUND);
-        rigidBody = GetComponent<Rigidbody>();
-        capsuleCollider = GetComponent<CapsuleCollider>();
-        animator = GetComponent<Animator>();
-        input = GetComponent<InputPlayerManager>();
         animIDFreeFall = Animator.StringToHash(ANIMATION_FREE_FALL);
         animIDGrounded = Animator.StringToHash(ANIMATION_IDLE);
-        lenthRay = (capsuleCollider.height / 2f * OFFSET_GROUND) - capsuleCollider.center.y;
+        groundHeight = (capsuleCollider.height / 2f- capsuleCollider.radius)*OFFSET_GROUND - capsuleCollider.center.y;
         SetGround(GetGroundStatus());
     }
 
@@ -43,7 +51,6 @@ public class GroundedState : BasePlayerState
         base.HandleInput();
         CheckFalling();
     }
-
     private void CheckFalling()
     {
         if (isFalling == GetGroundStatus())
@@ -61,11 +68,7 @@ public class GroundedState : BasePlayerState
 
     protected bool GetGroundStatus()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, lenthRay, layer))
-        {
-            return true;
-        }
-        return false;
+        return Physics.CheckSphere(target.position+Vector3.down*groundHeight, capsuleCollider.radius, layer);
     }
     protected bool GetMovementStatus()
     {
@@ -87,11 +90,4 @@ public class GroundedState : BasePlayerState
         return Input.GetAxis(VERTICAL);
 #endif
     }
-
-#if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        Debug.DrawLine(transform.position, transform.position + Vector3.down * lenthRay, Color.red);
-    }
-#endif
 }

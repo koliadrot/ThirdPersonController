@@ -6,14 +6,15 @@ using UnityEngine;
 /// <summary>
 /// Абстрактный класс состояния игрока
 /// </summary>
-[RequireComponent(typeof(PlayerController))]
-public class BasePlayerState : MonoBehaviour
+public class BasePlayerState
 {
-    protected IStatable statable = default;
+    protected IStatable statable;
+    protected IMachinable machinable;
 
-    protected virtual void Awake()
+    public BasePlayerState(IStatable _statable, IMachinable _machinable)
     {
-        statable = GetComponent<PlayerController>();
+        statable = _statable;
+        machinable = _machinable;
     }
 
     public virtual void Enter()
@@ -36,12 +37,15 @@ public class BasePlayerState : MonoBehaviour
     {
 
     }
+    protected virtual void Constructor()
+    {
 
+    }
     protected virtual void ChangeState(BasePlayerState state)
     {
         if (state == null)
         {
-            Debug.LogError("Тип состояния null");
+            Debug.LogError("Переход невозможен. Тип состояния null");
             return;
         }
         statable?.TransitionToState(state);

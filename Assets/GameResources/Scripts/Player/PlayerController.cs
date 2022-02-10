@@ -6,45 +6,55 @@ using UnityEngine;
 /// Контроллер состояний игрока
 /// </summary>
 [RequireComponent(typeof(InputPlayerManager))]
-public class PlayerController : MonoBehaviour, IStatable
+[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider)), RequireComponent(typeof(Animator))]
+public class PlayerController : MonoBehaviour,IMachinable
 {
-    [SerializeField]
-    private BasePlayerState currentState;
+    public GroundedState GroundedState { get; private set; }
+    public RunPlayerState RunState { get; private set; }
+    public IdlePlayerState IdleState { get; private set; }
+    public JumpPlayerState JumpState { get; private set; }
 
-    public BasePlayerState CurrentState => currentState;
+    public Rigidbody RigidBody { get; private set; }
+    public CapsuleCollider СapsuleCollider { get; private set; }
+    public Animator Animator { get; private set; }
+    public InputPlayerManager InputPlayer { get; private set; }
 
-    private void Start()
+    private StateMachine stateMachine;
+
+    private void Awake()
     {
-        Initialize(CurrentState);
-    }
+        RigidBody = GetComponent<Rigidbody>();
+        СapsuleCollider = GetComponent<CapsuleCollider>();
+        Animator = GetComponent<Animator>();
+        InputPlayer = GetComponent<InputPlayerManager>();
+        stateMachine = new StateMachine();
+        GroundedState = new GroundedState(stateMachine,this,this);
+        IdleState = new IdlePlayerState(stateMachine, this, this);
+        JumpState = new JumpPlayerState(stateMachine, this, this);
+        RunState = new RunPlayerState(stateMachine, this, this);
 
-    void IStatable.TransitionToState(BasePlayerState state)
-    {
-        currentState.Exit();
-
-        currentState = state;
-        state.Enter();
+        stateMachine.Initialize(IdleState);
     }
 
     private void FixedUpdate()
     {
-        currentState.PhysicsUpdate();
+        stateMachine.CurrentState.PhysicsUpdate();
     }
 
     private void Update()
     {
-        currentState.HandleInput();
-        currentState.LogicUpdate();
+        stateMachine.CurrentState.HandleInput();
+        stateMachine.CurrentState.LogicUpdate();
     }
 
-    public void Initialize(BasePlayerState state)
-    {
-        if (state == null)
-        {
-            Debug.LogError($"Отсутствует стартовый тип состояния {currentState.GetType()}");
-            return;
-        }
-        currentState = state;
-        state.Enter();
-    }
+    ///NOTE:Для отрисовки шара надо поменять модификатор доступа GroundedState.groundHeight
+    //#if UNITY_EDITOR
+    //    private void OnDrawGizmos()
+    //    {
+    //        if (GroundedState != null)
+    //        {
+    //            Gizmos.DrawSphere(transform.position + Vector3.down *GroundedState.groundHeight, СapsuleCollider.radius);
+    //        }
+    //    }
+    //#endif
 }

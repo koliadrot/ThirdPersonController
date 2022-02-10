@@ -8,20 +8,20 @@ using UnityEngine;
 /// </summary>
 public class JumpPlayerState : GroundedState
 {
-    [SerializeField]
     private float jumpForce = 5f;
 
     private int animIDJump;
 
-    private IdlePlayerState idleState;
-
     private const string ANIMATION_JUMP = "Jump";
 
-    protected override void Awake()
+    public JumpPlayerState(IStatable _statable, IMachinable _machinable, PlayerController _playerController) : base(_statable, _machinable, _playerController)
     {
-        base.Awake();
-        animator = GetComponent<Animator>();
-        idleState = GetComponent<IdlePlayerState>();
+        Constructor();
+    }
+
+    protected override void Constructor()
+    {
+        base.Constructor();
         animIDJump = Animator.StringToHash(ANIMATION_JUMP);
     }
 
@@ -35,7 +35,7 @@ public class JumpPlayerState : GroundedState
     {
         if (!GetGroundStatus())
         {
-            ChangeState(idleState);
+            ChangeState(machinable.IdleState);
         }
     }
 

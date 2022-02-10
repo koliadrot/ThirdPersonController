@@ -1002,13 +1002,10 @@ GameObject:
   - component: {fileID: 6982812146204527121}
   - component: {fileID: 1152420233}
   - component: {fileID: 1152420232}
-  - component: {fileID: 1152420228}
-  - component: {fileID: 1152420229}
-  - component: {fileID: 1152420230}
   - component: {fileID: 1152420231}
   - component: {fileID: 561525706}
   - component: {fileID: 561525707}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1077,51 +1074,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 1.84
+  m_Radius: 0.22
+  m_Height: 1.79
   m_Direction: 1
-  m_Center: {x: 0, y: 0.91, z: 0}
---- !u!114 &1152420228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4416926081852918481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 790a0fe26811c5d4ba979e5db790558b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpForce: 5
---- !u!114 &1152420229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4416926081852918481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cc926c7374f1344b83bc6969d909629, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 7
-  sprintSpeed: 20
-  speedChangeRate: 10
-  rotationSmoothTime: 0.12
---- !u!114 &1152420230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4416926081852918481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2095d7641572bf441b7aa36ee551c83d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Center: {x: 0, y: 0.89, z: 0}
 --- !u!114 &1152420231
 MonoBehaviour:
   m_ObjectHideFlags: 0

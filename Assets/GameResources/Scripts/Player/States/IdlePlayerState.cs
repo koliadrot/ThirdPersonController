@@ -7,14 +7,9 @@ using UnityEngine;
 /// </summary>
 public class IdlePlayerState : GroundedState
 {
-    private RunPlayerState runState;
-    private JumpPlayerState jumpState;
-
-    protected override void Awake()
+    public IdlePlayerState(IStatable _statable, IMachinable _machinable, PlayerController _playerController) : base(_statable, _machinable,_playerController)
     {
-        base.Awake();
-        runState = GetComponent<RunPlayerState>();
-        jumpState = GetComponent<JumpPlayerState>();
+        Constructor();
     }
 
     public override void PhysicsUpdate()
@@ -22,7 +17,7 @@ public class IdlePlayerState : GroundedState
         base.PhysicsUpdate();
         if (GetMovementStatus())
         {
-            ChangeState(runState);
+            ChangeState(machinable.RunState);
         }
     }
 
@@ -35,7 +30,7 @@ public class IdlePlayerState : GroundedState
         if (Input.GetKeyDown(KeyCode.Space) && GetGroundStatus())
 #endif
         {
-            ChangeState(jumpState);
+            ChangeState(machinable.JumpState);
         }
     }
 }
