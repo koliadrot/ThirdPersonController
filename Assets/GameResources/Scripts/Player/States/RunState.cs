@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
-/// Состояние бега
+/// Класс состояния "run"
 /// </summary>
-public class RunPlayerState : GroundedState
+public class RunState : GroundedState
 {
     private float sprintSpeed = 20f;
     private float animationBlend;
@@ -38,7 +38,7 @@ public class RunPlayerState : GroundedState
     private const int ROUND = 1000;
 
 
-    public RunPlayerState(IStatable _statable, IMachinable _machinable, PlayerController _playerController) : base(_statable, _machinable, _playerController)
+    public RunState(IStatable _statable, StateMachine _stateMachine, PlayerController _playerController) : base(_statable, _stateMachine, _playerController)
     {
         Constructor();
     }
@@ -56,7 +56,6 @@ public class RunPlayerState : GroundedState
     public override void Exit()
     {
         base.Exit();
-        sprint = false;
         OnStopSmoothDampingAnimate();
         OnStartSmoothDampingAnimate();
     }
@@ -64,6 +63,10 @@ public class RunPlayerState : GroundedState
     {
         base.Enter();
         OnStopSmoothDampingAnimate();
+        if (animationBlend <= 0f)
+        {
+            sprint = false;
+        }
     }
 
     public override void HandleInput()
@@ -71,7 +74,7 @@ public class RunPlayerState : GroundedState
         base.HandleInput();
         if (!GetMovementStatus())
         {
-            ChangeState(machinable.IdleState);
+            ChangeState(statble.IdleState);
         }
 #if ENABLE_INPUT_SYSTEM
         if (input.IsJump && GetGroundStatus())
@@ -79,7 +82,7 @@ public class RunPlayerState : GroundedState
         if (Input.GetKeyDown(KeyCode.Space) && GetGroundStatus())
 #endif
         {
-            ChangeState(machinable.JumpState);
+            ChangeState(statble.JumpState);
         }
 #if ENABLE_INPUT_SYSTEM
         if (input.IsSprint)

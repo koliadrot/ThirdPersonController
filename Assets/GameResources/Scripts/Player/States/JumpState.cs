@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Состояние прыжка
+/// Класс состояния "jump"
 /// </summary>
-public class JumpPlayerState : GroundedState
+public class JumpState : GroundedState
 {
     private float jumpForce = 5f;
 
@@ -14,7 +14,7 @@ public class JumpPlayerState : GroundedState
 
     private const string ANIMATION_JUMP = "Jump";
 
-    public JumpPlayerState(IStatable _statable, IMachinable _machinable, PlayerController _playerController) : base(_statable, _machinable, _playerController)
+    public JumpState(IStatable _statable, StateMachine _stateMachine, PlayerController _playerController) : base(_statable, _stateMachine, _playerController)
     {
         Constructor();
     }
@@ -35,7 +35,7 @@ public class JumpPlayerState : GroundedState
     {
         if (!GetGroundStatus())
         {
-            ChangeState(machinable.IdleState);
+            ChangeState(statble.IdleState);
         }
     }
 

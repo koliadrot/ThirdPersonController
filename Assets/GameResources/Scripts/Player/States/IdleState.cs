@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Состояние "Idle"
+/// Класс состояния "idle"
 /// </summary>
-public class IdlePlayerState : GroundedState
+public class IdleState : GroundedState
 {
-    public IdlePlayerState(IStatable _statable, IMachinable _machinable, PlayerController _playerController) : base(_statable, _machinable,_playerController)
+    public IdleState(IStatable _statable, StateMachine _stateMachine, PlayerController _playerController) : base(_statable, _stateMachine, _playerController)
     {
         Constructor();
     }
@@ -17,7 +17,7 @@ public class IdlePlayerState : GroundedState
         base.PhysicsUpdate();
         if (GetMovementStatus())
         {
-            ChangeState(machinable.RunState);
+            ChangeState(statble.RunState);
         }
     }
 
@@ -30,7 +30,7 @@ public class IdlePlayerState : GroundedState
         if (Input.GetKeyDown(KeyCode.Space) && GetGroundStatus())
 #endif
         {
-            ChangeState(machinable.JumpState);
+            ChangeState(statble.JumpState);
         }
     }
 }

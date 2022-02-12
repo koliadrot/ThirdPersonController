@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class GroundedState : BasePlayerState
+/// <summary>
+/// Класс состояния "ground"
+/// </summary>
+public class GroundedState : BaseState
 {
     protected Rigidbody rigidBody;
     protected CapsuleCollider capsuleCollider;
@@ -25,7 +27,7 @@ public class GroundedState : BasePlayerState
     private const string GROUND = "Ground";
     private const float OFFSET_GROUND = 1.05f;
 
-    public GroundedState(IStatable _statable, IMachinable _machinable, PlayerController _playerController) : base(_statable, _machinable)
+    public GroundedState(IStatable _statable, StateMachine _stateMachine, PlayerController _playerController) : base(_statable, _stateMachine)
     {
         playerController = _playerController;
         Constructor();

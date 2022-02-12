@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Абстрактный класс состояния игрока
+/// Базовый класс состояния игрока
 /// </summary>
-public class BasePlayerState
+public class BaseState
 {
-    protected IStatable statable;
-    protected IMachinable machinable;
+    protected IStatable statble;
+    protected StateMachine stateMachine;
 
-    public BasePlayerState(IStatable _statable, IMachinable _machinable)
+    public BaseState(IStatable _statable,StateMachine _stateMachine)
     {
-        statable = _statable;
-        machinable = _machinable;
+        statble = _statable;
+        stateMachine = _stateMachine;
     }
 
     public virtual void Enter()
@@ -41,13 +41,13 @@ public class BasePlayerState
     {
 
     }
-    protected virtual void ChangeState(BasePlayerState state)
+    protected virtual void ChangeState(BaseState state)
     {
         if (state == null)
         {
             Debug.LogError("Переход невозможен. Тип состояния null");
             return;
         }
-        statable?.TransitionToState(state);
+        stateMachine?.TransitionToState(state);
     }
 }

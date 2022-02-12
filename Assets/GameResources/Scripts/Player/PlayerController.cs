@@ -7,12 +7,12 @@ using UnityEngine;
 /// </summary>
 [RequireComponent(typeof(InputPlayerManager))]
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider)), RequireComponent(typeof(Animator))]
-public class PlayerController : MonoBehaviour,IMachinable
+public class PlayerController : MonoBehaviour,IStatable
 {
     public GroundedState GroundedState { get; private set; }
-    public RunPlayerState RunState { get; private set; }
-    public IdlePlayerState IdleState { get; private set; }
-    public JumpPlayerState JumpState { get; private set; }
+    public RunState RunState { get; private set; }
+    public IdleState IdleState { get; private set; }
+    public JumpState JumpState { get; private set; }
 
     public Rigidbody RigidBody { get; private set; }
     public CapsuleCollider СapsuleCollider { get; private set; }
@@ -28,10 +28,10 @@ public class PlayerController : MonoBehaviour,IMachinable
         Animator = GetComponent<Animator>();
         InputPlayer = GetComponent<InputPlayerManager>();
         stateMachine = new StateMachine();
-        GroundedState = new GroundedState(stateMachine,this,this);
-        IdleState = new IdlePlayerState(stateMachine, this, this);
-        JumpState = new JumpPlayerState(stateMachine, this, this);
-        RunState = new RunPlayerState(stateMachine, this, this);
+        GroundedState = new GroundedState(this,stateMachine,this);
+        IdleState = new IdleState(this, stateMachine, this);
+        JumpState = new JumpState(this, stateMachine, this);
+        RunState = new RunState(this, stateMachine, this);
 
         stateMachine.Initialize(IdleState);
     }

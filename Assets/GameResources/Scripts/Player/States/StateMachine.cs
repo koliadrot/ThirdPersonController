@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StateMachine:IStatable
+/// <summary>
+/// Класс для взаимодействия с состояниями
+/// </summary>
+public class StateMachine
 {
-    public BasePlayerState CurrentState { get; private set; }
+    public BaseState CurrentState { get; private set; }
 
-    public void TransitionToState(BasePlayerState state)
+    public void TransitionToState(BaseState state)
     {
         CurrentState.Exit();
 
@@ -14,7 +17,7 @@ public class StateMachine:IStatable
         state.Enter();
     }
 
-    public void Initialize(BasePlayerState startingState)
+    public void Initialize(BaseState startingState)
     {
         if (startingState == null)
         {
