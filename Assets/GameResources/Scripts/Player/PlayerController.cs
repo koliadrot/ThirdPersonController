@@ -19,10 +19,14 @@ public class PlayerController : MonoBehaviour,IStatable
     public Animator Animator { get; private set; }
     public InputPlayerManager InputPlayer { get; private set; }
 
+    [SerializeField]
+    private Camera playerCamera;
+
     private StateMachine stateMachine;
 
     private void Awake()
     {
+        playerCamera = playerCamera == null ? Camera.main : playerCamera;
         RigidBody = GetComponent<Rigidbody>();
         СapsuleCollider = GetComponent<CapsuleCollider>();
         Animator = GetComponent<Animator>();
@@ -31,7 +35,7 @@ public class PlayerController : MonoBehaviour,IStatable
         GroundedState = new GroundedState(this,stateMachine,this);
         IdleState = new IdleState(this, stateMachine, this);
         JumpState = new JumpState(this, stateMachine, this);
-        RunState = new RunState(this, stateMachine, this);
+        RunState = new RunState(this, stateMachine, this,playerCamera);
 
         stateMachine.Initialize(IdleState);
     }

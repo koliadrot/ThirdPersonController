@@ -19,7 +19,7 @@ public class BaseState
 
     public virtual void Enter()
     {
-
+        Cursor.visible = false;
     }
     public virtual void HandleInput()
     {

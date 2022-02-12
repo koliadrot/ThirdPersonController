@@ -30,6 +30,7 @@ public class RunState : GroundedState
 
     private Vector3 targetDirection;
     private Vector3 inputDirection;
+    private Camera targetCamera;
 
     private int animIDSpeed;
 
@@ -38,8 +39,9 @@ public class RunState : GroundedState
     private const int ROUND = 1000;
 
 
-    public RunState(IStatable _statable, StateMachine _stateMachine, PlayerController _playerController) : base(_statable, _stateMachine, _playerController)
+    public RunState(IStatable _statable, StateMachine _stateMachine, PlayerController _playerController,Camera _targetCamera) : base(_statable, _stateMachine, _playerController)
     {
+        targetCamera = _targetCamera;
         Constructor();
     }
 
@@ -103,7 +105,7 @@ public class RunState : GroundedState
 
         inputDirection = new Vector3(GetHorizontalPosition(), 0.0f, GetVerticalPosition()).normalized;
 
-        targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
+        targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + targetCamera.transform.eulerAngles.y;
         rotation = Mathf.SmoothDampAngle(target.eulerAngles.y, targetRotation, ref rotationVelocity, rotationSmoothTime);
 
         target.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
