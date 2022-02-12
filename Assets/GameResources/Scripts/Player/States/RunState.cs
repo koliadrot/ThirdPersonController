@@ -103,7 +103,7 @@ public class RunState : GroundedState
         speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed, Time.deltaTime * speedChangeRate);
         speed = Mathf.Round(speed * ROUND) / ROUND;
 
-        inputDirection = new Vector3(GetHorizontalPosition(), 0.0f, GetVerticalPosition()).normalized;
+        inputDirection = new Vector3(GetPosition().x, 0.0f, GetPosition().y).normalized;
 
         targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + targetCamera.transform.eulerAngles.y;
         rotation = Mathf.SmoothDampAngle(target.eulerAngles.y, targetRotation, ref rotationVelocity, rotationSmoothTime);

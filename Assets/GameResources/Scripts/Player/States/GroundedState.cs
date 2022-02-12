@@ -74,22 +74,14 @@ public class GroundedState : BaseState
     }
     protected bool GetMovementStatus()
     {
-        return GetHorizontalPosition() != 0f || GetVerticalPosition() != 0f;
+        return GetPosition().magnitude != 0f;
     }
-    protected virtual float GetHorizontalPosition()
+    protected virtual Vector2 GetPosition()
     {
 #if ENABLE_INPUT_SYSTEM
-       return input.Move.x;
+       return input.Move;
 #else
-       return Input.GetAxis(HORIZONTAL);
-#endif
-    }
-    protected virtual float GetVerticalPosition()
-    {
-#if ENABLE_INPUT_SYSTEM
-        return input.Move.y;
-#else
-        return Input.GetAxis(VERTICAL);
+       return new Vector2(Input.GetAxis(HORIZONTAL), Input.GetAxis(VERTICAL));
 #endif
     }
 }
