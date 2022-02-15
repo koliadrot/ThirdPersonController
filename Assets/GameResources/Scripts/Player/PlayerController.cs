@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Контроллер состояний игрока
 /// </summary>
-[RequireComponent(typeof(InputPlayerManager))]
+[RequireComponent(typeof(InputPlayerManager),typeof(InputMobileManager))]
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider)), RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour,IStatable
 {
@@ -18,9 +18,11 @@ public class PlayerController : MonoBehaviour,IStatable
     public CapsuleCollider СapsuleCollider { get; private set; }
     public Animator Animator { get; private set; }
     public InputPlayerManager InputPlayer { get; private set; }
+    public InputMobileManager InputMobilePlayer { get; private set; }
 
     [SerializeField]
     private Camera playerCamera;
+    public Camera PlayerCamera => playerCamera;
 
     private StateMachine stateMachine;
 
@@ -31,11 +33,12 @@ public class PlayerController : MonoBehaviour,IStatable
         СapsuleCollider = GetComponent<CapsuleCollider>();
         Animator = GetComponent<Animator>();
         InputPlayer = GetComponent<InputPlayerManager>();
+        InputMobilePlayer = GetComponent<InputMobileManager>();
         stateMachine = new StateMachine();
         GroundedState = new GroundedState(this,stateMachine,this);
         IdleState = new IdleState(this, stateMachine, this);
         JumpState = new JumpState(this, stateMachine, this);
-        RunState = new RunState(this, stateMachine, this,playerCamera);
+        RunState = new RunState(this, stateMachine, this);
 
         stateMachine.Initialize(IdleState);
     }

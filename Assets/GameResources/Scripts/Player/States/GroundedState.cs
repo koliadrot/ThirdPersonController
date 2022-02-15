@@ -10,7 +10,8 @@ public class GroundedState : BaseState
     protected Rigidbody rigidBody;
     protected CapsuleCollider capsuleCollider;
     protected Animator animator;
-    protected InputPlayerManager input;
+    protected InputPlayerManager newInput;
+    protected InputMobileManager mobileInput;
     protected Transform target;
     protected PlayerController playerController;
 
@@ -39,12 +40,13 @@ public class GroundedState : BaseState
         rigidBody = playerController.RigidBody;
         capsuleCollider = playerController.СapsuleCollider;
         animator = playerController.Animator;
-        input = playerController.InputPlayer;
+        newInput = playerController.InputPlayer;
+        mobileInput = playerController.InputMobilePlayer;
         target = playerController.transform;
         layer.value = LayerMask.GetMask(GROUND);
         animIDFreeFall = Animator.StringToHash(ANIMATION_FREE_FALL);
         animIDGrounded = Animator.StringToHash(ANIMATION_IDLE);
-        groundHeight = (capsuleCollider.height / 2f- capsuleCollider.radius)*OFFSET_GROUND - capsuleCollider.center.y;
+        groundHeight = (capsuleCollider.height / 2f - capsuleCollider.radius) * OFFSET_GROUND - capsuleCollider.center.y;
         SetGround(GetGroundStatus());
     }
 
@@ -53,6 +55,7 @@ public class GroundedState : BaseState
         base.HandleInput();
         CheckFalling();
     }
+
     private void CheckFalling()
     {
         if (isFalling == GetGroundStatus())
@@ -70,7 +73,7 @@ public class GroundedState : BaseState
 
     protected bool GetGroundStatus()
     {
-        return Physics.CheckSphere(target.position+Vector3.down*groundHeight, capsuleCollider.radius, layer);
+        return Physics.CheckSphere(target.position + Vector3.down * groundHeight, capsuleCollider.radius, layer);
     }
     protected bool GetMovementStatus()
     {
@@ -78,10 +81,12 @@ public class GroundedState : BaseState
     }
     protected virtual Vector2 GetPosition()
     {
-#if ENABLE_INPUT_SYSTEM
-       return input.Move;
+#if UNITY_IOS || UNITY_ANDROID
+        return mobileInput.GetMovePosition();
+#elif ENABLE_INPUT_SYSTEM && NEW_INPUT_SYSTEM
+        return newInput.Move;
 #else
-       return new Vector2(Input.GetAxis(HORIZONTAL), Input.GetAxis(VERTICAL));
+        return new Vector2(Input.GetAxis(HORIZONTAL), Input.GetAxis(VERTICAL));
 #endif
     }
 }

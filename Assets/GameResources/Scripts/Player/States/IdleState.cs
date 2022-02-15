@@ -24,8 +24,8 @@ public class IdleState : GroundedState
     public override void HandleInput()
     {
         base.HandleInput();
-#if ENABLE_INPUT_SYSTEM
-        if (input.IsJump && GetGroundStatus())
+#if ENABLE_INPUT_SYSTEM && NEW_INPUT_SYSTEM
+        if (newInput.IsJump && GetGroundStatus())
 #else
         if (Input.GetKeyDown(KeyCode.Space) && GetGroundStatus())
 #endif

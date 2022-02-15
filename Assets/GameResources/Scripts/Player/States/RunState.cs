@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,9 +38,8 @@ public class RunState : GroundedState
     private const int ROUND = 1000;
 
 
-    public RunState(IStatable _statable, StateMachine _stateMachine, PlayerController _playerController,Camera _targetCamera) : base(_statable, _stateMachine, _playerController)
+    public RunState(IStatable _statable, StateMachine _stateMachine, PlayerController _playerController) : base(_statable, _stateMachine, _playerController)
     {
-        targetCamera = _targetCamera;
         Constructor();
     }
 
@@ -49,11 +47,12 @@ public class RunState : GroundedState
     {
         base.Constructor();
         animIDSpeed = Animator.StringToHash(ANIMATION_SPEED);
+        targetCamera = playerController.PlayerCamera;
     }
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        Move();
+        Move(GetPosition());
     }
     public override void Exit()
     {
@@ -78,16 +77,16 @@ public class RunState : GroundedState
         {
             ChangeState(statble.IdleState);
         }
-#if ENABLE_INPUT_SYSTEM
-        if (input.IsJump && GetGroundStatus())
+#if ENABLE_INPUT_SYSTEM && NEW_INPUT_SYSTEM
+        if (newInput.IsJump && GetGroundStatus())
 #else
         if (Input.GetKeyDown(KeyCode.Space) && GetGroundStatus())
 #endif
         {
             ChangeState(statble.JumpState);
         }
-#if ENABLE_INPUT_SYSTEM
-        if (input.IsSprint)
+#if ENABLE_INPUT_SYSTEM && NEW_INPUT_SYSTEM
+        if (newInput.IsSprint)
 #else
         if (Input.GetKeyDown(KeyCode.LeftShift))
 #endif
@@ -95,7 +94,7 @@ public class RunState : GroundedState
             sprint = !sprint;
         }
     }
-    private void Move()
+    private void Move(Vector2 position)
     {
         targetSpeed = sprint ? sprintSpeed : moveSpeed;
         currentHorizontalSpeed = new Vector3(rigidBody.velocity.x, 0.0f, rigidBody.velocity.z).magnitude;
@@ -103,7 +102,7 @@ public class RunState : GroundedState
         speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed, Time.deltaTime * speedChangeRate);
         speed = Mathf.Round(speed * ROUND) / ROUND;
 
-        inputDirection = new Vector3(GetPosition().x, 0.0f, GetPosition().y).normalized;
+        inputDirection = new Vector3(position.x, 0.0f, position.y).normalized;
 
         targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + targetCamera.transform.eulerAngles.y;
         rotation = Mathf.SmoothDampAngle(target.eulerAngles.y, targetRotation, ref rotationVelocity, rotationSmoothTime);
